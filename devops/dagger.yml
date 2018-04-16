@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dagger-master
+  namespace: dagger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: dagger-operator
+  template:
+    spec:
+      containers:
+      - env:
+        - name: AWS_REGION
+          value: eu-west-1
+        - name: STATE_BUCKET
+          value: dagger-state-bucket
+        - name: AWS_ACCESS_KEY
+          value: XXXXX
+        - name: AWS_SECRET_KEY
+          value: XXXXX
+        image: docker.io/emblica/dagger:latest
+        name: dagger-master
+      serviceAccountName: dagger-master

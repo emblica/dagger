@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testjob
+  namespace: default
+  labels:
+    jobscheduler: dagger
+spec:
+  template:
+    metadata:
+      namespace: default
+      labels:
+        task-id: testtaskid
+        run: testrun
+        manifest: testmanifest
+        jobscheduler: dagger
+    spec:
+      volumes:
+      - name: state
+        emptyDir: {}
+      - name: input
+        emptyDir: {}
+      - name: output
+        emptyDir: {}
+      restartPolicy: "OnFailure"
+      initContainers:
+      - name: load-input
+        image: docker.io/theikkila/statesaver
+        command: ["./loader.sh"]
+        volumeMounts:
+        - name: state
+          mountPath: /state
+        - name: input
+          mountPath: /input
+      containers:
+      - name: workload
+        image: busybox
+        volumeMounts:
+          - name: state
+            mountPath: /state
+          - name: input
+            mountPath: /input
+          - name: output
+            mountPath: /output
+      - name: save-state
+        image: docker.io/theikkila/statesaver
+        command: ["./saver.sh"]
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: state
+            mountPath: /state
+          - name: output
+            mountPath: /output
+        env:
+        - name: RANDOM_ENV
+          value: "value"

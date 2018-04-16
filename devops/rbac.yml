@@ -1,0 +1,49 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dagger-master-role
+rules:
+  -
+    apiGroups:
+      - ""
+      - apps
+      - autoscaling
+      - batch
+      - extensions
+      - policy
+      - rbac.authorization.k8s.io
+      - dagger.emblica.fi
+    resources:
+      - componentstatuses
+      - configmaps
+      - secrets
+      - events
+      - jobs
+      - pods
+      - manifests
+      - runs
+    verbs: ["*"]
+  - nonResourceURLs: ["*"]
+    verbs: ["*"]
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dagger-master
+  namespace: dagger
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dagger-master-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: dagger-master
+    namespace: dagger
+roleRef:
+  kind: ClusterRole
+  name: dagger-master-role
+  apiGroup: rbac.authorization.k8s.io

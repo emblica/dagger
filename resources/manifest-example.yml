@@ -1,0 +1,31 @@
+apiVersion: "dagger.emblica.fi/v0beta1"
+kind: DaggerManifest
+metadata:
+  name: small-workflow-1
+spec:
+  trigger:
+    type: webhook
+    opts:
+      path: "/small-workflow-1"
+  on-error:
+    image: theikkila/aws-utils
+    command: ["./error.sh", "start-emr", "submit-job", "wait-for-job-to-finish"]
+    namespace:
+  tasks:
+  - name: load-kubernetes-homepage
+    namespace: default
+    depends: []
+    image: busybox
+    command:
+    - sh
+    - -c
+    - "wget -O /output/index.html http://kubernetes.io/index.html && touch /state/ready"
+  - name: ps-aux
+    namespace: default
+    depends:
+      - load-kubernetes-homepage
+    image: busybox
+    command:
+    - sh
+    - -c
+    - "du -hs /input/load-kubernetes-homepage/index.html && touch /state/ready"

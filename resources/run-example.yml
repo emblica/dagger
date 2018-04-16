@@ -1,0 +1,9 @@
+apiVersion: "dagger.emblica.fi/v0beta1"
+kind: DaggerRun
+metadata:
+  name: small-workflow-1-run-1
+  labels:
+    manifest: small-workflow-1
+spec:
+  params:
+    site: "www.google.fi"
