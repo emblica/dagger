@@ -1,3 +1,4 @@
+<img src="/docs/dagger_logo.png?raw=true">
 # Dagger - Workflow Manager for Kubernetes
 
 Kubernetes has Jobs but it's only limited as single step and not enough for modeling
@@ -117,12 +118,15 @@ assume that it's not 'production' ready in that sense.
 - Improve Kubernetes API handling (current hack uses kubectl through JSON-input/output)
 - Trigger support
 - Tests
+- Static analysis
+- Manifest checks (schema, loops etc.)
+- Better failure handling
 - Better documentation
 - Stateloaders for other environment than just for Amazon S3
 
 
 ## Supported by
 
-This work is partially made with support from Emblica.
+This work is partially made with support from Emblica.   
 https://emblica.com
 >Emblica is a data engineering company. Our clients range from startups to publicly listed companies. We support Open Source and commit back to the community whenever we can.

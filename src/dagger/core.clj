@@ -127,7 +127,7 @@
       (all-tasks-done? enriched-tasks) (k8s/mark-as-done! run)
       (any-task-failed? enriched-tasks) (k8s/mark-as-failed! run)
       ;(maximum-parallel-task-running? enriched-tasks g) (k8s/mark-as-running! run)
-      :else (->> enriched-tasks
+      :else (some->> enriched-tasks
               (remove done?)
               (remove running?)
               (filter (partial free-task? g done-tasks))
