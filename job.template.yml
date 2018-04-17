@@ -25,7 +25,7 @@ spec:
       restartPolicy: "OnFailure"
       initContainers:
       - name: load-input
-        image: docker.io/theikkila/statesaver
+        image: docker.io/emblica/dagger-stateloader
         command: ["./loader.sh"]
         volumeMounts:
         - name: state
@@ -43,7 +43,7 @@ spec:
           - name: output
             mountPath: /output
       - name: save-state
-        image: docker.io/theikkila/statesaver
+        image: docker.io/emblica/dagger-stateloader
         command: ["./saver.sh"]
         imagePullPolicy: Always
         volumeMounts:
