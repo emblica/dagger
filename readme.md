@@ -111,12 +111,32 @@ Because Kubernetes doesn't currently support any other way it's similar containe
 When both workload and **saver** exists successfully the Job is done and Dagger will launch next Job
 
 
+## Garbage Collection
+
+Dagger can automatically remove old runs and related Jobs.
+For that you have to define `gc` into DaggerRun manifest:
+```
+apiVersion: "dagger.emblica.fi/v0beta1"
+kind: DaggerRun
+metadata:
+  name: small-workflow-1-run-1
+  labels:
+    manifest: small-workflow-1
+spec:
+  gc: "2018-08-02T12:48:00.000Z"
+  params:
+    site: "www.google.fi"
+
+```
+
+If the run status is now `done` and time has passed the garbage collection timeline run and all related Jobs will be deleted.
+
+
 ## Todo
 
 Dagger is released as  work in process and it's codebase is mainly from single hackathon,
 assume that it's not 'production' ready in that sense.
 
-- Automatic garbage collection (for recurring jobs)
 - Improve Kubernetes API handling (current hack uses kubectl through JSON-input/output)
 - Trigger support
 - Tests
