@@ -43,6 +43,10 @@
       (assoc-in ["metadata" "labels" "priority"] (str (:priority (:run manifest))))
       (assoc-in ["metadata" "labels" "manifest"] (:name manifest))
       (assoc-in ["metadata" "namespace"] (:namespace task))
+
+      (assoc-in ["metadata" "ownerReferences" 0 "name"] (:name (:run manifest)))
+      (assoc-in ["metadata" "ownerReferences" 0 "uid"]  (:uid (:run manifest)))
+
       (assoc-in ["spec" "template" "metadata" "namespace"] (:namespace task))
       (assoc-in ["spec" "template" "metadata" "labels" "task-id"] (:id task))
       (assoc-in ["spec" "template" "metadata" "labels" "task"] (:name task))

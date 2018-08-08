@@ -2,6 +2,7 @@
   (:require [tick.core :refer [minutes seconds]]
             [tick.timeline :refer [timeline periodic-seq]]
             [tick.clock :refer [now]]
+            [taoensso.timbre :as log]
             [tick.schedule])
   (:import java.util.concurrent.locks.ReentrantLock))
 
@@ -9,7 +10,11 @@
   (let [lock (new ReentrantLock)]
     (fn [tick]
       (when (.tryLock lock)
-        (f tick)
+        (try
+          (f tick)
+          (catch Exception e
+            (log/error e)
+            (System/exit 1)))
         (.unlock lock)))))
 
 (defn schedule-every-30s [f]

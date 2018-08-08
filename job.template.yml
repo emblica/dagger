@@ -3,6 +3,13 @@ kind: Job
 metadata:
   name: testjob
   namespace: default
+  ownerReferences:
+  - apiVersion: dagger.emblica.fi/v0beta1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaggerRun
+    name: dagger-run-name
+    uid: dagger-run-uid
   labels:
     jobscheduler: dagger
 spec:

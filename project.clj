@@ -11,7 +11,8 @@
                  [environ "1.1.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [io.fabric8/kubernetes-client "3.1.10"]
-                 [clj-ulid "0.1.0-SNAPSHOT"]]
+                 [clj-ulid "0.1.0-SNAPSHOT"]
+                 [clj-time "0.14.4"]]
   :plugins [[lein-environ "1.1.0"]]
   :main ^:skip-aot dagger.core
   :target-path "target/%s"

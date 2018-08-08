@@ -79,7 +79,9 @@
     (let [json (j/write-value-as-string content)
           {:keys [out err]} (sh "kubectl" "patch" resource name "--type=merge" "-o=json" "-p" json)]
       (when (not (empty? err))
-        (log/error "kube-patch error" err))
+        (do
+          (log/error "kube-patch error" err)
+          (throw (Exception. err))))
       (j/read-value out (j/object-mapper {:decode-key-fn true}))))
 
 (defn kube-get [resource flags]
@@ -102,13 +104,18 @@
 (defn uninitialized-runs! []
   (kube-get-runs ["-l" "initialized!=true"]))
 
+(defn spec-with-uid [ob]
+  (-> ob
+    :spec
+    (assoc :uid (-> ob :metadata :uid))))
+
 (defn runs! []
   (->> (kube-get-runs ["-l" "initialized=true"])
-    (map :spec)))
+    (map spec-with-uid)))
 
 (defn done-runs! []
   (->> (kube-get-runs ["-l" "initialized=true"])
-    (map :spec)
+    (map spec-with-uid)
     (filter #(= "done" (:status %)))))
 
 

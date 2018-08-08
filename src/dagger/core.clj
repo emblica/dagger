@@ -5,6 +5,8 @@
             [dagger.utils :refer [index-by mapmap now]]
             [clj-ulid :as ulid]
             [dagger.scheduler :as scheduler]
+            [clj-time.format :as f]
+            [clj-time.core :as t]
             [taoensso.timbre :as log])
   (:gen-class))
 
@@ -191,6 +193,23 @@
         (populate-run! manifest spec)))
     (doall)))
 
+(defn has-gc-field? [run]
+  (run :gc))
+
+(def datetime (f/formatters :date-time))
+
+(defn garbage-collectable? [run]
+  (let [gc-timestamp (f/parse datetime (run :gc))]
+    (t/before? gc-timestamp (t/now))))
+
+
+(defn garbage-collect! [runs]
+  (dorun (->> runs
+           (filter done?)
+           (filter has-gc-field?)
+           (filter garbage-collectable?)
+           (map #(k8s/kube-delete! "dr" (:name %))))))
+
 
 (defn main-loop []
   (do
@@ -198,6 +217,8 @@
     (db/update-manifests (k8s/manifests))
     (log/info "Initialize uninitialized runs (from loaded manifests)")
     (initialize-runs! (db/manifests!))
+    (log/info "Garbage collection")
+    (garbage-collect! (k8s/runs!))
     (log/info "Update state with already running jobs and update states back to k8s runs")
     (branch (k8s/jobs)
       [db/update-tasks

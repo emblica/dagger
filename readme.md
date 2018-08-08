@@ -65,6 +65,7 @@ metadata:
   labels:
     manifest: small-workflow-1
 spec:
+  gc: "2018-08-02T12:48:00.000Z"
   params:
     site: "www.google.fi"
 
